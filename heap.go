@@ -25,16 +25,11 @@ func E(item interface{}) *Element {
 }
 
 func makeNode(e *Element, k int) *Node {
-	u := new(Node)
-
-	u.item = e
+	u := &Node{
+		item: e,
+		key:  k,
+	}
 	e.node = u
-	u.child = nil
-	u.next = nil
-	u.ep = nil
-	u.key = k
-	u.rank = 0
-
 	return u
 }
 
@@ -46,7 +41,6 @@ func FindMin(h *Node) *Element {
 	if h == nil {
 		return nil
 	}
-
 	return h.item
 }
 
