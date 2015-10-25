@@ -4,10 +4,47 @@
 */
 package hollow
 
-type Node struct {
-	child *Node
-	next  *Node
-	ep    *Node
+type Heap struct {
+	root *node
+	size int
+}
+
+func (h *Heap) Insert(e *Element, k int) {
+	h.size++
+	h.root = insert(e, k, h.root)
+}
+
+func (h *Heap) FindMin() *Element {
+	return findMin(h.root)
+}
+
+func (h *Heap) DecreaseKey(e *Element, k int) {
+	h.root = decreaseKey(e, k, h.root)
+}
+
+func (h *Heap) DeleteItem(e *Element) {
+	h.size--
+	h.root = deleteItem(e, h.root)
+}
+
+func (h *Heap) Meld(g *Heap) {
+	h.size += g.size
+	h.root = meld(h.root, g.root)
+}
+
+func (h *Heap) DeleteMin() {
+	h.size--
+	h.root = deleteMin(h.root)
+}
+
+func (h *Heap) Size() int {
+	return h.size
+}
+
+type node struct {
+	child *node
+	next  *node
+	ep    *node
 
 	rank int
 
@@ -17,15 +54,15 @@ type Node struct {
 
 type Element struct {
 	item interface{}
-	node *Node
+	node *node
 }
 
 func E(item interface{}) *Element {
 	return &Element{item: item}
 }
 
-func makeNode(e *Element, k int) *Node {
-	u := &Node{
+func makenode(e *Element, k int) *node {
+	u := &node{
 		item: e,
 		key:  k,
 	}
@@ -33,24 +70,24 @@ func makeNode(e *Element, k int) *Node {
 	return u
 }
 
-func Insert(e *Element, k int, h *Node) *Node {
-	return Meld(makeNode(e, k), h)
+func insert(e *Element, k int, h *node) *node {
+	return meld(makenode(e, k), h)
 }
 
-func FindMin(h *Node) *Element {
+func findMin(h *node) *Element {
 	if h == nil {
 		return nil
 	}
 	return h.item
 }
 
-func DecreaseKey(e *Element, k int, h *Node) *Node {
+func decreaseKey(e *Element, k int, h *node) *node {
 	u := e.node
 	if u == h {
 		u.key = k
 		return h
 	}
-	v := makeNode(e, k)
+	v := makenode(e, k)
 	u.item = nil
 	if u.rank > 2 {
 		v.rank = u.rank - 2
@@ -60,18 +97,18 @@ func DecreaseKey(e *Element, k int, h *Node) *Node {
 	return link(v, h)
 }
 
-func DeleteMin(h *Node) *Node {
-	return DeleteItem(h.item, h)
+func deleteMin(h *node) *node {
+	return deleteItem(h.item, h)
 }
 
-func DeleteItem(e *Element, h *Node) *Node {
+func deleteItem(e *Element, h *node) *node {
 	e.node.item = nil
 	e.node = nil
 	if h.item != nil {
 		return h /* Non-minimum deletion */
 	}
 
-	A := make([]*Node, 64)
+	A := make([]*node, 64)
 	maxRank := 0
 	h.next = nil
 	for h != nil { /* While L not empty */
@@ -119,7 +156,7 @@ func DeleteItem(e *Element, h *Node) *Node {
 	return h
 }
 
-func Meld(g, h *Node) *Node {
+func meld(g, h *node) *node {
 	if h == nil {
 		return g
 	}
@@ -131,7 +168,7 @@ func Meld(g, h *Node) *Node {
 	return link(g, h)
 }
 
-func link(v, w *Node) *Node {
+func link(v, w *node) *node {
 
 	if v.key >= w.key {
 		addChild(v, w)
@@ -142,7 +179,7 @@ func link(v, w *Node) *Node {
 	return v
 }
 
-func addChild(v, w *Node) {
+func addChild(v, w *node) {
 	v.next = w.child
 	w.child = v
 }
