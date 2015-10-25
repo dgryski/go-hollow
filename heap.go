@@ -49,17 +49,6 @@ func (h *Heap) Size() int {
 	return h.size
 }
 
-type node struct {
-	child *node
-	next  *node
-	ep    *node
-
-	rank int
-
-	item *Element
-	key  int
-}
-
 // Element is an item stored in the heap
 type Element struct {
 	item interface{}
@@ -69,6 +58,17 @@ type Element struct {
 // E is a convenient constructor for elements
 func E(item interface{}) *Element {
 	return &Element{item: item}
+}
+
+type node struct {
+	child *node
+	next  *node
+	ep    *node
+
+	rank int
+
+	item *Element
+	key  int
 }
 
 func makenode(e *Element, k int) *node {
