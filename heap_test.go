@@ -13,7 +13,8 @@ func TestHeap(t *testing.T) {
 	}
 
 	for h != nil {
-		t.Log(FindMin(h))
+		m := FindMin(h)
+		t.Log(m.item.(int))
 		h = DeleteMin(h)
 	}
 }
