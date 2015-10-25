@@ -4,39 +4,47 @@
 */
 package hollow
 
+// Heap is a heap
 type Heap struct {
 	root *node
 	size int
 }
 
+// Insert inserts an element into the heap with priority k
 func (h *Heap) Insert(e *Element, k int) {
 	h.size++
 	h.root = insert(e, k, h.root)
 }
 
+// FindMin returns the minimum element of the heap
 func (h *Heap) FindMin() *Element {
 	return findMin(h.root)
 }
 
+// DecreaseKey decreases the priority of element e to k
 func (h *Heap) DecreaseKey(e *Element, k int) {
 	h.root = decreaseKey(e, k, h.root)
 }
 
+// DeleteItem removes element e from the heap[
 func (h *Heap) DeleteItem(e *Element) {
 	h.size--
 	h.root = deleteItem(e, h.root)
 }
 
+// Meld merges two heaps
 func (h *Heap) Meld(g *Heap) {
 	h.size += g.size
 	h.root = meld(h.root, g.root)
 }
 
+// DeleteMin removes the smallest element from the heap
 func (h *Heap) DeleteMin() {
 	h.size--
 	h.root = deleteMin(h.root)
 }
 
+// Size returns the number of elements stored in the heap
 func (h *Heap) Size() int {
 	return h.size
 }
@@ -52,11 +60,13 @@ type node struct {
 	key  int
 }
 
+// Element is an item stored in the heap
 type Element struct {
 	item interface{}
 	node *node
 }
 
+// E is a convenient constructor for elements
 func E(item interface{}) *Element {
 	return &Element{item: item}
 }
