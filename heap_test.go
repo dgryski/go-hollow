@@ -3,12 +3,12 @@ package hollow
 import (
 	"container/heap"
 	"math/rand"
-	"strconv"
 	"sort"
+	"strconv"
 	"testing"
 )
 
-func TestHeap(t *testing.T) {
+func TestHeapSort(t *testing.T) {
 
 	keys := []int{14, 11, 5, 9, 0, 8, 10, 3, 6, 12, 13, 4}
 
@@ -20,12 +20,14 @@ func TestHeap(t *testing.T) {
 
 	sort.Ints(keys)
 
-	for idx := 0; h.Size() > 0; h.DeleteMin() {
+	for _, v := range keys {
 		m := h.FindMin().item.(int)
-		if m != keys[idx] {
-			t.Errorf("out-of-order element: got %v, want %v", m, keys[idx])
+
+		if m != v {
+			t.Errorf("out-of-order element: got %v, want %v", m, v)
 		}
-		idx++
+
+		h.DeleteMin()
 	}
 }
 
