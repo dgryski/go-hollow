@@ -17,9 +17,13 @@ func TestHeap(t *testing.T) {
 		h.Insert(E(k), k)
 	}
 
+	x := -1
 	for h.Size() > 0 {
-		m := h.FindMin()
-		t.Log(m.item.(int))
+		m := h.FindMin().item.(int)
+		if m <= x {
+			t.Errorf("out of order element")
+		}
+		x = m
 		h.DeleteMin()
 	}
 }
