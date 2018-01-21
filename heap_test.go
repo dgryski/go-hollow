@@ -4,6 +4,7 @@ import (
 	"container/heap"
 	"math/rand"
 	"strconv"
+	"sort"
 	"testing"
 )
 
@@ -17,14 +18,14 @@ func TestHeap(t *testing.T) {
 		h.Insert(E(k), k)
 	}
 
-	x := -1
-	for h.Size() > 0 {
+	sort.Ints(keys)
+
+	for idx := 0; h.Size() > 0; h.DeleteMin() {
 		m := h.FindMin().item.(int)
-		if m <= x {
-			t.Errorf("out of order element")
+		if m != keys[idx] {
+			t.Errorf("out-of-order element: got %v, want %v", m, keys[idx])
 		}
-		x = m
-		h.DeleteMin()
+		idx++
 	}
 }
 
