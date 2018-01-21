@@ -1,7 +1,9 @@
 package hollow
 
 import (
+	"container/heap"
 	"math/rand"
+	"strconv"
 	"testing"
 )
 
@@ -69,11 +71,21 @@ func benchmarkHeap(n int, b *testing.B) {
 
 	for i := 0; i < b.N; i++ {
 		for _, v := range x {
-			h.Push(&pqitem{v, v})
+			heap.Push(&h, &pqitem{v, v})
 		}
 
 		for j := 0; j < n; j++ {
-			h.Pop()
+			h[0].priority--
+			heap.Fix(&h, 0)
+		}
+
+		for j := 0; j < n; j++ {
+			h[0].priority--
+			heap.Fix(&h, 0)
+		}
+
+		for j := 0; j < n; j++ {
+			heap.Pop(&h)
 		}
 	}
 }
@@ -98,29 +110,23 @@ func benchmarkHollow(n int, b *testing.B) {
 		}
 
 		for j := 0; j < n; j++ {
+			e := h.FindMin()
+			h.DecreaseKey(e, 1)
+		}
+
+		for j := 0; j < n; j++ {
 			h.DeleteMin()
 		}
 	}
 }
 
-func BenchmarkHollow10(b *testing.B)   { benchmarkHollow(10, b) }
-func BenchmarkHollow20(b *testing.B)   { benchmarkHollow(20, b) }
-func BenchmarkHollow50(b *testing.B)   { benchmarkHollow(50, b) }
-func BenchmarkHollow100(b *testing.B)  { benchmarkHollow(100, b) }
-func BenchmarkHollow200(b *testing.B)  { benchmarkHollow(200, b) }
-func BenchmarkHollow500(b *testing.B)  { benchmarkHollow(500, b) }
-func BenchmarkHollow1000(b *testing.B) { benchmarkHollow(1000, b) }
-func BenchmarkHollow2000(b *testing.B) { benchmarkHollow(2000, b) }
-func BenchmarkHollow5000(b *testing.B) { benchmarkHollow(5000, b) }
-func BenchmarkHollow1e6(b *testing.B)  { benchmarkHollow(1e6, b) }
+func BenchmarkHollow(b *testing.B) { runBenchmarks(b, benchmarkHollow) }
+func BenchmarkHeap(b *testing.B)   { runBenchmarks(b, benchmarkHeap) }
 
-func BenchmarkHeap10(b *testing.B)   { benchmarkHeap(10, b) }
-func BenchmarkHeap20(b *testing.B)   { benchmarkHeap(20, b) }
-func BenchmarkHeap50(b *testing.B)   { benchmarkHeap(50, b) }
-func BenchmarkHeap100(b *testing.B)  { benchmarkHeap(100, b) }
-func BenchmarkHeap200(b *testing.B)  { benchmarkHeap(200, b) }
-func BenchmarkHeap500(b *testing.B)  { benchmarkHeap(500, b) }
-func BenchmarkHeap1000(b *testing.B) { benchmarkHeap(1000, b) }
-func BenchmarkHeap2000(b *testing.B) { benchmarkHeap(2000, b) }
-func BenchmarkHeap5000(b *testing.B) { benchmarkHeap(5000, b) }
-func BenchmarkHeap1e6(b *testing.B)  { benchmarkHeap(1e6, b) }
+func runBenchmarks(b *testing.B, f func(n int, b *testing.B)) {
+	steps := []int{10, 20, 50, 100, 200, 500, 1000, 2000, 5000, 1e6}
+
+	for _, n := range steps {
+		b.Run(strconv.Itoa(n), func(b *testing.B) { f(n, b) })
+	}
+}
