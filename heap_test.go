@@ -29,6 +29,10 @@ func TestHeapSort(t *testing.T) {
 
 		h.DeleteMin()
 	}
+
+	if h.Size() != 0 {
+		t.Errorf("items remaining in heap")
+	}
 }
 
 type pqitem struct {
