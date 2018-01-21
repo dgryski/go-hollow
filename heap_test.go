@@ -21,7 +21,7 @@ func TestHeapSort(t *testing.T) {
 	sort.Ints(keys)
 
 	for _, v := range keys {
-		m := h.FindMin().item.(int)
+		m := h.FindMin().Item.(int)
 
 		if m != v {
 			t.Errorf("out-of-order element: got %v, want %v", m, v)
@@ -116,7 +116,7 @@ func benchmarkHollow(n int, b *testing.B) {
 
 	for i := 0; i < b.N; i++ {
 		for _, v := range x {
-			h.Insert(&Element{item: v}, v)
+			h.Insert(&Element{Item: v}, v)
 		}
 
 		for j := 0; j < n; j++ {
