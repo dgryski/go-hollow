@@ -51,13 +51,24 @@ func (h *Heap) Size() int {
 
 // Element is an item stored in the heap
 type Element struct {
-	Item interface{}
+	item interface{}
 	node *node
+}
+
+// Item returns the item associated with an element
+func (e *Element) Item() interface{} { return e.item }
+
+// Priority returns the priority of the element
+func (e *Element) Priority() (int, bool) {
+	if e.node == nil {
+		return 0, false
+	}
+	return e.node.key, true
 }
 
 // E is a convenient constructor for elements
 func E(item interface{}) *Element {
-	return &Element{Item: item}
+	return &Element{item: item}
 }
 
 type node struct {
