@@ -85,13 +85,17 @@ func benchmarkHeap(n int, b *testing.B) {
 		}
 
 		for j := 0; j < n; j++ {
-			h[0].priority--
-			heap.Fix(&h, 0)
+			if h[0].priority > 0 {
+				h[0].priority--
+				heap.Fix(&h, 0)
+			}
 		}
 
 		for j := 0; j < n; j++ {
-			h[0].priority--
-			heap.Fix(&h, 0)
+			if h[0].priority > 0 {
+				h[0].priority--
+				heap.Fix(&h, 0)
+			}
 		}
 
 		for j := 0; j < n; j++ {
@@ -121,7 +125,18 @@ func benchmarkHollow(n int, b *testing.B) {
 
 		for j := 0; j < n; j++ {
 			e := h.FindMin()
-			h.DecreaseKey(e, 1)
+			p, _ := e.Priority()
+			if p > 0 {
+				h.DecreaseKey(e, p-1)
+			}
+		}
+
+		for j := 0; j < n; j++ {
+			e := h.FindMin()
+			p, _ := e.Priority()
+			if p > 0 {
+				h.DecreaseKey(e, p-1)
+			}
 		}
 
 		for j := 0; j < n; j++ {
